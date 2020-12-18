@@ -10,48 +10,48 @@ sidebar: general_sidebar
 
 ## Introduction
 
-The C++ guidelines are for the benefit of client library designers targeting service applications written in C++.  You do not have to write a client library for C++ if your service is not normally accessed from C++.
+The C++ guidelines are for the benefit of client library designers targeting service applications written in C++.  You do not need to write a client library for C++ if your service is not normally accessed from C++.
 
 ### Design Principles {#cpp-principles}
 
-The Azure SDK should be designed to enhance the productivity of developers connecting to Azure services. Other qualities (such as completeness, extensibility, and performance) are important but secondary. Productivity is achieved by adhering to the principles described below:
+The Azure SDK is designed to enhance the productivity of developers connecting to Azure services. Other qualities (such as completeness, extensibility, and performance) are important but secondary. Productivity is achieved by adhering to the principles described below:
 
 **Idiomatic**
 
-* The SDK should follow the general design guidelines and conventions for the target language. It should feel natural to a developer in the target language.
+* The SDK follows the general design guidelines and conventions for the target language. It feels natural to a developer in the target language.
 * We embrace the ecosystem with its strengths and its flaws.
 * We work with the ecosystem to improve it for all developers.
 
 **Consistent**
 
-* Client libraries should be consistent within the language, consistent with the service and consistent between all target languages. In cases of conflict, consistency within the language is the highest priority and consistency between all target languages is the lowest priority.
-* Service-agnostic concepts such as logging, HTTP communication, and error handling should be consistent. The developer should not have to relearn service-agnostic concepts as they move between client libraries.
+* Client libraries are consistent within the language, consistent with the service and consistent between all target languages. In cases of conflict, consistency within the language is the highest priority and consistency between all target languages is the lowest priority.
+* Service-agnostic concepts such as logging, HTTP communication, and error handling are consistent. The developer does not need to relearn service-agnostic concepts as they move between client libraries.
 * Consistency of terminology between the client library and the service is a good thing that aids in diagnosability.
 * All differences between the service and client library must have a good (articulated) reason for existing, rooted in idiomatic usage rather than whim.
 * The Azure SDK for each target language feels like a single product developed by a single team.
-* There should be feature parity across target languages. This is more important than feature parity with the service.
+* There is feature parity across target languages. This is more important than feature parity with the service.
 
 **Approachable**
 
 * We are experts in the supported technologies so our customers, the developers, don't have to be.
-* Developers should find great documentation (hero tutorial, how to articles, samples, and API documentation) that makes it easy to be successful with the Azure service.
-* Getting off the ground should be easy through the use of predictable defaults that implement best practices. Think about progressive concept disclosure.
-* The SDK should be easily acquired through the most normal mechanisms in the target language and ecosystem.
-* Developers can be overwhelmed when learning new service concepts. The core use cases should be discoverable.
+* Developers find great documentation (hero tutorial, how to articles, samples, and API documentation) that makes it easy to be successful with the Azure service.
+* Getting off the ground is easy through the use of predictable defaults that implement best practices. Think about progressive concept disclosure.
+* The SDK is easily acquired through the most normal mechanisms in the target language and ecosystem.
+* Developers can be overwhelmed when learning new service concepts. The core use cases are easily discoverable.
 
 **Diagnosable**
 
-* The developer should be able to understand what is going on.
-* It should be discoverable when and under what circumstances a network call is made.
+* The developer is able to understand what is going on.
+* It is discoverable when and under what circumstances a network call is made.
 * Defaults are discoverable and their intent is clear.
-* Logging, tracing, and exception handling are fundamental and should be thoughtful.
-* Error messages should be concise, correlated with the service, actionable, and human readable. Ideally, the error message should lead the consumer to a useful action that they can take.
-* Integrating with the preferred debugger for the target language should be easy.
+* Logging, tracing, and exception handling are fundamental and are thoughtful.
+* Error messages are concise, correlated with the service, actionable, and human readable. Ideally, the error message leads the consumer to a useful action that they can take.
+* Integrating with the preferred debugger for the target language is easy.
 
 **Dependable**
 
 * Breaking changes are more harmful to a user's experience than most new features and improvements are beneficial.
-* Incompatibilities should never be introduced deliberately without thorough review and very strong justification.
+* Incompatibilities are never introduced deliberately without thorough review and very strong justification.
 * Do not rely on dependencies that can force our hand on compatibility.
 
 ### General Guidelines {#cpp-general}
@@ -139,7 +139,7 @@ When configuring your client library, particular care must be taken to ensure th
 
 {% include requirement/MUST id="cpp-config-optout" %} allow consumers of your service clients to opt out of all global configuration settings at once.
 
-{% include requirement/MUST id="cpp-config-global-overrides" %} allow all global configuration settings to be overridden by client-provided options. The names of these options should align with any user-facing global configuration keys.
+{% include requirement/MUST id="cpp-config-global-overrides" %} allow all global configuration settings to be overridden by client-provided options. The names of these options align with user-facing global configuration keys.
 
 {% include requirement/MUSTNOT id="cpp-config-defaults-nochange" %} Change the default values of client
 configuration options based on system or program state.
@@ -173,8 +173,7 @@ Use a constructor parameter called `version` on the client options type.
 * The `version` parameter must be the first parameter to all constructor overloads.
 * The `version` parameter must be required, and default to the latest supported service version.
 * The type of the `version` parameter must be `ServiceVersion`; an enum nested in the options type.
-* The `ServiceVersion` enum must use explicit values starting from 1.
-* `ServiceVersion` enum value 0 is reserved. When 0 is passed into APIs, ArgumentException should be thrown.
+* The `ServiceVersion` enum must use explicit values starting from 0.
 
 ##### Mocking
 
@@ -188,7 +187,9 @@ _Service methods_ are the methods on the client that invoke operations on the se
 
 ##### Sync and Async
 
-> TODO: This section needs to be driven by code in the Core library.
+{% include requirement/MUST id="cpp-syncasync-synchronous" %} provide a synchronous API programming models.
+
+{% include requirement/MUSTNOT id="cpp-syncasync-synchronous" %} provide an asynchronous API programming models.
 
 ##### Naming
 
@@ -219,7 +220,7 @@ namespace Details {
 
 {% include requirement/MUST id="cpp-design-naming-variables-public-global" %} name namespace scope variables intended for user consumption with **PascalCase**.
 
-{% include requirement/MUST id="cpp-design-naming-variables-constants" %} name namespace scope `const` or `constexpr` variables intended for user consumption with **PascalCase** and a `c_` prefix.
+{% include requirement/MUST id="cpp-design-naming-variables-constants" %} name namespace scope `const` or `constexpr` variables intended for user consumption with **PascalCase**.
 
 {% include requirement/MUST id="cpp-design-naming-variables-public-global" %} name namespace scope non-constant variables intended only for internal consumption with a `g_` prefix followed by **camelCase**. For example, `g_applicationContext`. Note that all such cases will be in a `Details` namespace or an unnamed namespace.
 
@@ -229,10 +230,10 @@ namespace Details {
 // Examples of the above naming rules:
 
 namespace Azure { namespace Group { namespace Service {
-int PublicNamespaceScopeVariable; // these should be used sparingly
-const int c_PublicNamespaceScopeConstant = 42;
-constexpr int c_OtherPublicNamespaceScopeConstant = 42;
-constexpr char * c_PublicNamespaceScopeConstantPointer = nullptr; // const pointer to modifiable
+int PublicNamespaceScopeVariable; // public fields should be used sparingly
+const int PublicNamespaceScopeConstant = 42;
+constexpr int OtherPublicNamespaceScopeConstant = 42;
+constexpr char * PublicNamespaceScopeConstantPointer = nullptr; // const pointer to modifiable
 
 void Function(int parameterName) {
     int localName;
@@ -268,12 +269,11 @@ uint32 MyWeightKg;
 
 {% include requirement/MUST id="cpp-design-naming-variables-one-per-line" %} Declare or define each variable on its own line, except when declaring bitfields. An exception can be made when declaring bitfields (to clarify that the variable is a part of one bitfield). The use of bitfields in general is discouraged.
 
-
 ##### Cancellation
 
-{% include requirement/MUST id="cpp-service-methods-cancellation" %} ensure all service methods, both asynchronous and synchronous, take an optional `Context` parameter called _context_.
+{% include requirement/MUST id="cpp-service-methods-cancellation" %} ensure all service methods take an options struct which contains a `Context`.
 
-The context should be further passed to all calls that take a context. DO NOT check the context manually, except when running a significant amount of CPU-bound work within the library, e.g. a loop that can take more than a typical network call.
+The context must be passed to all calls that take a context. DO NOT check the context manually, except when running a significant amount of CPU-bound work within the library, e.g. a loop that can take more than a typical network call.
 
 ##### Mocking
 
@@ -345,7 +345,7 @@ The service client will have several methods that perform requests on the servic
 
 #### Methods Returning Collections (Paging) {#cpp-paging}
 
-Although object-orientated languages can eschew low-level pagination APIs in favor of high-level abstractions, C acts as a lower level language and thus embraces pagination APIs provided by the service.  You should work within the confines of the paging system provided by the service.
+Although object-orientated languages can eschew low-level pagination APIs in favor of high-level abstractions, C++ acts as a lower level language and thus embraces pagination APIs provided by the service.  You should work within the confines of the paging system provided by the service.
 
 {% include requirement/MUST id="cpp-design-logical-client-pagination-use-paging" %} export the same paging API as the service provides.
 
@@ -394,7 +394,9 @@ This section describes guidelines for the design _model types_ and all their tra
 
 > TODO: This section needs to be driven by code in the Core library.
 
-{% include requirement/MUST id="cpp-enums" %} use an `enum` for parameters, properties, and return types when values are known.
+{% include requirement/MUST id="cpp-enums" %} use an `enum` for parameters, properties, and return types when values are known and there is certaintity that the set of enum symbols will **never** change over all versions of the service.
+
+> TODO: Add reference to extensible enums or move to this section.
 
 {% include requirement/MAY id="cpp-enums-exception" %} use a `struct` in place of an `enum` that declares well-known fields but can contain unknown values returned from the service, or user-defined values passed to the service.
 
@@ -418,7 +420,7 @@ The `Azure::Core::Uri` type is located in `azure-core` package.
 
 ### Exceptions {#cpp-errors}
 
-Error handling is an important aspect of implementing a client library. It is the primary method by which problems are communicated to the consumer. Because we intend for the C client libraries to be used on a wide range of devices with a wide range of reliability requirements, it's important to provide robust error handling.
+Error handling is an important aspect of implementing C++ client library. It is the primary method by which problems are communicated to the consumer. Because we intend for the C++ client libraries to be used on a wide range of devices with a wide range of reliability requirements, it's important to provide robust error handling.
 
 We distinguish between several different types of errors:
 
@@ -475,7 +477,7 @@ Note that on some comonly deployed platforms like Linux, handling heap exhaustio
 
 {% include requirement/MUST id="cpp-design-logical-errorhandling-recov-reporting" %} report errors by throwing C++ exceptions defined in the Azure C++ Core Library.
 
-> TODO: The Core library needs to provide exceptions for the common failure modes, e.g. the same values as `az_result` in the C SDK.
+> TODO: The Core library needs to provide exceptions for the common failure modes, e.g. the same values as `az_result` in the C++ SDK.
 
 For example:
 
@@ -530,7 +532,7 @@ void ApiFunc(const Callback& c) {
 
 Azure services use a variety of different authentication schemes to allow clients to access the service. Conceptually, there are two entities responsible in this process: a credential and an authentication policy.  Credentials provide confidential authentication data.  Authentication policies use the data provided by a credential to authenticate requests to the service.
 
-{% include requirement/MUST id="cpp-design-logical-client-support-all-auth-techniques" %} support all authentication techniques that the service supports and are available to a client application (as opposed to service side).  C is used only for client applications when talking to Azure, so some authentication techniques may not be valid.
+{% include requirement/MUST id="cpp-design-logical-client-support-all-auth-techniques" %} support all authentication techniques that the service supports and are available to a client application (as opposed to service side).  C++ is used only for client applications when talking to Azure, so some authentication techniques may not be valid.
 
 {% include requirement/MUST id="cpp-design-logical-client-use-azure-core" %} use credential and authentication policy implementations from the Azure Core library where available.
 
@@ -544,17 +546,14 @@ Azure services use a variety of different authentication schemes to allow client
 
 When implementing authentication, don't open up the consumer to security holes like PII (personally identifiable information) leakage or credential leakage.  Credentials are generally issued with a time limit, and must be refreshed periodically to ensure that the service connection continues to function as expected.  Ensure your client library follows all current security recommendations and consider an independent security review of the client library to ensure you're not introducing potential security problems for the consumer.
 
-{% include requirement/MUSTNOT id="cpp-implementing-no-persistence-auth" %}
-persist, cache, or reuse security credentials.  Security credentials should be considered short lived to cover both security concerns and credential refresh situations.
-
+{% include requirement/MUSTNOT id="cpp-implementing-no-persistence-auth" %} persist, cache, or reuse security credentials.  Security credentials should be considered short lived to cover both security concerns and credential refresh situations.
 If your service implements a non-standard credential system (one that is not supported by Azure Core), then you need to produce an authentication policy for the HTTP pipeline that can authenticate requests given the alternative credential types provided by the client library.
 
-{% include requirement/MUST id="cpp-implementing-secure-auth-erase" %} Use a "secure" function to zero authentication or authorization credentials as soon as possible once they are no longer needed. Examples of such functions
+{% include requirement/MUST id="cpp-implementing-secure-auth-erase" %} use a "secure" function to zero authentication or authorization credentials as soon as possible once they are no longer needed. Examples of such functions
 include: `SecureZeroMemory`, `memset_s`, and `explicit_bzero`. Examples of insecure functions include `memset`. An optimizer may notice that the credentials are
 never accessed again, and optimize away the call to `memset`, resulting in the credentials remaining in memory.
 
-{% include requirement/MUST id="cpp-implementing-auth-policy" %}
-provide a suitable authentication policy that authenticates the HTTP request in the HTTP pipeline when using non-standard credentials.  This includes custom connection strings, if supported.
+{% include requirement/MUST id="cpp-implementing-auth-policy" %} provide a suitable authentication policy that authenticates the HTTP request in the HTTP pipeline when using non-standard credentials.  This includes custom connection strings, if supported.
 
 ### Namespaces {#cpp-namespace-naming}
 
@@ -584,7 +583,7 @@ For example, `Azure::Storage::Blobs` or `Azure::Storage::Files::Shares`
 - `Azure::Security` for client libraries dealing with security
 - `Azure::Storage` for client libraries that handle unstructured data
 
-If you think a new group should be added to the list, contact [adparch].
+If you think a new group must be added to the list, contact [adparch].
 
 {% include requirement/MUST id="general-namespaces-shortened-name" %} pick a shortened service name that allows the consumer to tie the package to the service being used.  As a default, use the compressed service name.  The namespace does **NOT** change when the branding of the product changes, so avoid the use of marketing names that may change.
 
@@ -660,7 +659,7 @@ Here are some namespaces that do not meet the guidelines:
 
 {% include requirement/SHOULD id="cpp-package-dynamic" %} provide both dynamic and static linking options for your library.  Each has its own merits and use cases.
 
-{% include requirement/MUST id="cpp-package-source" %} publish your package in source code format.  Due to differences in platforms, this is the most common publishing mechanism for C libraries.
+{% include requirement/MUST id="cpp-package-source" %} publish your package in source code format.  Due to differences in platforms, this is the most common publishing mechanism for C++ libraries.
 
 {% include requirement/MUST id="cpp-package-vcpkg" %} publish your package to [vcpkg](https://github.com/Microsoft/vcpkg), a C++ library manager supporting Windows, Linux, and MacOS.
 
@@ -676,7 +675,7 @@ Here are some namespaces that do not meet the guidelines:
 
 {% include requirement/MUST id="cpp-versioning-new-package" %} introduce a new package (with new assembly names, new namespace names, and new type names) if you must do an API breaking change.
 
-Breaking changes should happen rarely, if ever.  Register your intent to do a breaking change with [adparch]. You'll need to have a discussion with the language architect before approval.
+Breaking changes rarely happen, if ever.  Register your intent to do a breaking change with [adparch]. You'll need to have a discussion with the language architect before approval.
 
 ##### Package Version Numbers {#cpp-versionnumbers}
 
@@ -705,7 +704,7 @@ Use _-beta._N_ suffix for beta package versions. For example, _1.0.0-beta.2_.
 Dependencies bring in many considerations that are often easily avoided by avoiding the
 dependency.
 
-- **Versioning** - Many programming languages do not allow a consumer to load multiple versions of the same package. So, if we have an client library that requires v3 of package Foo and the consumer wants to use v5 of package Foo, then the consumer cannot build their application. This means that client libraries should not have dependencies by default.
+- **Versioning** - Many programming languages do not allow a consumer to load multiple versions of the same package. So, if we have an client library that requires v3 of package Foo and the consumer wants to use v5 of package Foo, then the consumer cannot build their application. Client libraries must not have dependencies by default.
 - **Size** - Consumer applications must be able to deploy as fast as possible into the cloud and move in various ways across networks. Removing additional code (like dependencies) improves deployment performance.
 - **Licensing** - You must be conscious of the licensing restrictions of a dependency and often provide proper attribution and notices when using them.
 - **Compatibility** - Often times you do not control a dependency and it may choose to evolve in a direction that is incompatible with your original use.
@@ -739,7 +738,7 @@ See the [documentation guidelines]({{ site.baseurl }}/general_documentation.html
 
 {% include requirement/MUST id="cpp-general-engsys" %} follow Azure SDK engineering systems guidelines for working in the [azure/azure-sdk-for-cpp] GitHub repository.
 
-> TODO: Content in this section below here should be moved to a better location.
+> TODO: Content in this section below here needs a better location.
 
 {% include requirement/MUST id="cpp-style-clang-format" %} format your source code with `clang-format`, using the configuration file located in [the azure-sdk-for-cpp repo](https://github.com/Azure/azure-sdk-for-cpp/blob/master/.clang-format).
 
@@ -749,7 +748,7 @@ See the [documentation guidelines]({{ site.baseurl }}/general_documentation.html
 
 {% include requirement/MUST id="cpp-style-filenames" %} use characters in the range `[a-z0-9_]` for the name portion (before the file extension).  No other characters are permitted.
 
-Filenames should be concise, but convey what role the file plays within the library.
+Filenames must be concise and convey what role the file plays within the library.
 
 {% include requirement/MUST id="cpp-style-headerguards" %} use `#pragma once`
 
@@ -776,7 +775,7 @@ There are several documentation deliverables that must be included in or as a co
 * `Quickstart` - Article on docs.microsoft.com that is similar to but expands on the README content; typically written by your service's content developer.
 * `Conceptual` - Long-form documentation like Quickstarts, Tutorials, How-to guides, and other content on docs.microsoft.com; typically written by your service's content developer.
 
-{% include requirement/MUST id="cpp-docs-contentdev" %} include your service's content developer in the Architecture Board review for your library. To find the content developer you should work with, check with your team's Program Manager.
+{% include requirement/MUST id="cpp-docs-contentdev" %} include your service's content developer in the Architecture Board review for your library. Check with your team's Program Manager to identity the correct content developer to work with.
 
 {% include requirement/MUST id="cpp-docs-contributors-guide" %} follow the [Azure SDK Contributors Guide]. (MICROSOFT INTERNAL)
 
@@ -852,7 +851,7 @@ void get_cat_properties(cat* our_cat, cat_properties* props, size_t* num_props);
 
 **Code snippets**
 
-{% include requirement/MUST id="cpp-docs-include-snippets" %} include example code snippets alongside your library's code within the repository. The snippets should clearly and succinctly demonstrate the operations most developers need to perform with your library. Include snippets for every common operation, and especially for those that are complex or might otherwise be difficult for new users of your library. At a bare minimum, include snippets for the champion scenarios you've identified for the library.
+{% include requirement/MUST id="cpp-docs-include-snippets" %} include example code snippets alongside your library's code within the repository. The snippets clearly and succinctly demonstrate the operations most developers need to perform with your library. Include snippets for every common operation, and especially for those that are complex or might otherwise be difficult for new users of your library. At a bare minimum, include snippets for the champion scenarios you've identified for the library.
 
 {% include requirement/MUST id="cpp-docs-build-snippets" %} build and test your example code snippets using the repository's continuous integration (CI) to ensure they remain functional.
 
@@ -933,7 +932,7 @@ not in function documentation. To generate a link from a function's documentatio
 void do_something_or_other(const some_struct& s);
 {% endhighlight %}
 
-{% include requirement/MUSTNOT id="cpp-docs-operation-combinations" %} combine more than one operation in a code snippet unless it's required for demonstrating the type or member, or it's *in addition to* existing snippets that demonstrate atomic operations. For example, a Cosmos DB code snippet should not include both account and container creation operations--create two different snippets, one for account creation, and one for container creation.
+{% include requirement/MUSTNOT id="cpp-docs-operation-combinations" %} combine more than one operation in a code snippet unless it's required for demonstrating the type or member, or it's *in addition to* existing snippets that demonstrate atomic operations. For example, a Cosmos DB code snippet must not include both account and container creation operations.  Instead, create two different snippets. One for account creation and one for container creation.
 
 Combined operations cause unnecessary friction for a library consumer by requiring knowledge of additional operations which might be outside their current focus. It requires them to first understand the tangential code surrounding the operation they're working on, then carefully extract just the code they need for their task. The developer can no longer simply copy and paste the code snippet into their project.
 
@@ -942,8 +941,7 @@ Combined operations cause unnecessary friction for a library consumer by requiri
 {% include requirement/MUST id="cpp-docs-buildsystem" %} Provide a buildsystem target called "docs" to build
     the documentation
 
-{% include requirement/MUST id="cpp-docs-buildsystem-option" %} Provide an option `BUILD_DOCS` to control
-    building of the docs, this should default to `OFF`
+{% include requirement/MUST id="cpp-docs-buildsystem-option" %} Provide the option `BUILD_DOCS` to control building of docs.  The default is set to `OFF`
 
 To provide this you can use the CMake `FindDoxygen` module as follows:
 
@@ -1038,7 +1036,7 @@ switch (...) {
 }
 {% endhighlight %}
 
-{% include requirement/SHOULDNOT id="cpp-format-cpp-no-goto" %} use `goto` statements.  The main place where `goto` statements can be usefully employed is to break out of several levels of `switch`, `for`, or `while` nesting, although the need to do such a thing may indicate that the inner constructs should be broken out into a separate function with a success/failure return code.  When a `goto` is necessary, the accompanying label should be alone on a line and to the left of the code that follows.  The `goto` should be commented as to its utility and purpose.
+{% include requirement/SHOULDNOT id="cpp-format-cpp-no-goto" %} use `goto` statements.  The main place where `goto` statements can be usefully employed is to break out of several levels of `switch`, `for`, or `while` nesting, although the need to do such a thing may indicate that the inner constructs be broken out into a separate function with a success/failure return code.  When a `goto` is necessary, the accompanying label must be alone on a line and to the left of the code that follows.  The `goto` must be commented as to its utility and purpose.
 
 ### README {#cpp-repository-readme}
 
@@ -1048,7 +1046,7 @@ An example of a good `README.md` file can be found [here](https://github.com/Azu
 
 {% include requirement/MUST id="cpp-docs-readme-consumer" %} optimize the `README.md` for the consumer of the client library.
 
-The contributor guide (`CONTRIBUTING.md`) should be a separate file linked to from the main component `README.md`.
+The contributor guide (`CONTRIBUTING.md`) is a separate file linked to from the main component `README.md`.
 
 ### Samples {#cpp-samples}
 
@@ -1058,7 +1056,7 @@ The contributor guide (`CONTRIBUTING.md`) should be a separate file linked to fr
 
 > TODO: Provide C++ specific API design guidelines.  Example:
 
-{% include requirement/SHOULDNOT id="cpp-format-cpp-no-goto" %} use `goto` statements.  The main place where `goto` statements can be usefully employed is to break out of several levels of `switch`, `for`, or `while` nesting, although the need to do such a thing may indicate that the inner constructs should be broken out into a separate function with a success/failure return code.  When a `goto` is necessary, the accompanying label should be alone on a line and to the left of the code that follows.  The `goto` should be commented as to its utility and purpose.
+{% include requirement/SHOULDNOT id="cpp-format-cpp-no-goto" %} use `goto` statements.  The main place where `goto` statements can be usefully employed is to break out of several levels of `switch`, `for`, or `while` nesting, although the need to do such a thing may indicate that the inner constructs be broken out into a separate function with a success/failure return code.  When a `goto` is necessary, the accompanying label must be alone on a line and to the left of the code that follows.  The `goto` must be commented as to its utility and purpose.
 
 <!-- Links -->
 
